@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
 
 class ProductsProvider with ChangeNotifier {
+  var _showFavoritesOnly = false;
   List<Product> _items = [
     Product(
       id: 'p1',
@@ -40,6 +41,11 @@ class ProductsProvider with ChangeNotifier {
   ];
 
   UnmodifiableListView<Product> get items {
+    if (_showFavoritesOnly) {
+      return UnmodifiableListView(
+          _items.where((element) => element.isFavorite));
+    }
+
     return UnmodifiableListView(_items);
   }
 
@@ -50,5 +56,15 @@ class ProductsProvider with ChangeNotifier {
 
   Product findById(String id) {
     return _items.firstWhere((element) => element.id == id);
+  }
+
+  void showFavoritesOnly() {
+    _showFavoritesOnly = true;
+    notifyListeners();
+  }
+
+  void showAll() {
+    _showFavoritesOnly = false;
+    notifyListeners();
   }
 }
